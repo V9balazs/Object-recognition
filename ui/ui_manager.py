@@ -1,7 +1,8 @@
-from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QHBoxLayout, QPushButton, QVBoxLayout
-from ui_component import DropZoneLabel, ResultsListWidget
+
+from ui.ui_component import DropZoneLabel, ResultsListWidget
 
 
 class UIManager:
@@ -16,53 +17,34 @@ class UIManager:
 
     # UI elemek beállítása
     def setup_ui(self):
-        # Központi widget
-        central_widget = QtWidgets.QWidget()
-        self.main_window.setCentralWidget(central_widget)
+        # UI betöltése a .ui fájlból
+        uic.loadUi("ui/ui_window.ui", self.main_window)
 
-        # Fő layout
-        main_layout = QVBoxLayout(central_widget)
+        # UI elemek referenciáinak mentése
+        old_drop_zone = self.main_window.findChild(QtWidgets.QLabel, "Drop_Zone")
 
-        # UI elemek létrehozása a ui_window.ui alapján
-
-        # Drop zóna
-        self.drop_zone = DropZoneLabel()
+        # Drop zóna lecserélése a saját DropZoneLabel osztályunkra
+        self.drop_zone = DropZoneLabel(old_drop_zone.parent())
         self.drop_zone.setObjectName("Drop_Zone")
-        self.drop_zone.setGeometry(QtCore.QRect(10, 10, 531, 431))
+        self.drop_zone.setGeometry(old_drop_zone.geometry())
 
-        # Betöltés gomb
-        self.load_button = QPushButton("Kép betöltése")
-        self.load_button.setObjectName("Load_Button")
-        self.load_button.setGeometry(QtCore.QRect(220, 460, 111, 51))
+        # Kicseréljük a layout-ban
+        layout = old_drop_zone.parent().layout()
+        if layout:
+            index = layout.indexOf(old_drop_zone)
+            layout.removeWidget(old_drop_zone)
+            layout.insertWidget(index, self.drop_zone)
+        else:
+            # Ha nincs layout, akkor pozíció alapján helyezzük el
+            self.drop_zone.setParent(old_drop_zone.parent())
+            self.drop_zone.move(old_drop_zone.pos())
+            self.drop_zone.show()
 
-        # Objektum lista
-        self.results_list = ResultsListWidget()
-        self.results_list.setObjectName("Object_List")
-        self.results_list.setGeometry(QtCore.QRect(560, 10, 256, 521))
+        old_drop_zone.deleteLater()
 
-        # Layout létrehozása a ui_window.ui elrendezése alapján
-        content_layout = QHBoxLayout()
-
-        # Bal oldali rész (drop zóna és gomb)
-        left_layout = QVBoxLayout()
-        left_layout.addWidget(self.drop_zone)
-        left_layout.addWidget(self.load_button, 0, QtCore.Qt.AlignmentFlag.AlignCenter)
-
-        # Elemek hozzáadása a content layout-hoz
-        content_layout.addLayout(left_layout, 3)  # 3:1 arány
-        content_layout.addWidget(self.results_list, 1)
-
-        # Layout hozzáadása a fő layout-hoz
-        main_layout.addLayout(content_layout)
-
-        # Státuszsor beállítása
-        self.main_window.statusBar().showMessage("Kész")
-
-        # Ablak címének beállítása
-        self.main_window.setWindowTitle("Object Recognition")
-
-        # Ablak méretének beállítása
-        self.main_window.resize(828, 550)
+        # Többi UI elem referenciájának mentése
+        self.load_button = self.main_window.findChild(QtWidgets.QPushButton, "Load_Button")
+        self.results_list = self.main_window.findChild(QtWidgets.QListWidget, "Object_List")
 
         return self
 
