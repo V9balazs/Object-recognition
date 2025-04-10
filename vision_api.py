@@ -1,11 +1,14 @@
 import io
 import logging
+import os
 
 from google.cloud import vision
 
+# A könyvtár helyének beállítása
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "credentials.json"
+
 
 class VisionAPI:
-    """Google Cloud Vision API kezelő osztály"""
 
     def __init__(self):
         """Inicializálja a Vision API klienst"""
