@@ -19,12 +19,9 @@ logging.basicConfig(
 
 
 class ObjectDetectorApp(QMainWindow):
-    """
-    Fő alkalmazás osztály az objektum felismerő programhoz
-    """
 
+    # Alkalmazás inicializálása
     def __init__(self):
-        """Inicializálja az alkalmazást"""
         super().__init__()
 
         # Változók inicializálása
@@ -50,24 +47,22 @@ class ObjectDetectorApp(QMainWindow):
             logging.error(f"Hiba az alkalmazás inicializálásakor: {str(e)}")
             QMessageBox.critical(self, "Inicializálási hiba", f"Hiba történt az alkalmazás indításakor: {str(e)}")
 
+    # Kép betöltése fájlválasztó dialógussal
     def load_image(self):
-        """Kép betöltése fájlválasztó dialógussal"""
-        options = QFileDialog.Options()
-        file_name, _ = QFileDialog.getOpenFileName(
-            self, "Kép kiválasztása", "", "Képek (*.png *.jpg *.jpeg *.bmp *.gif);;Minden fájl (*)", options=options
-        )
+        try:
+            file_name, _ = QFileDialog.getOpenFileName(
+                self, "Kép kiválasztása", "", "Képek (*.png *.jpg *.jpeg *.bmp *.gif);;Minden fájl (*)"
+            )
 
-        if file_name:
-            logging.info(f"Kép kiválasztva: {file_name}")
-            self.process_image(file_name)
+            if file_name:
+                logging.info(f"Kép kiválasztva: {file_name}")
+                self.process_image(file_name)
+        except Exception as e:
+            logging.error(f"Hiba a kép betöltése közben: {str(e)}")
+            QMessageBox.critical(self, "Betöltési hiba", f"Hiba történt a kép betöltése közben: {str(e)}")
 
+    # Kép feldolgozása
     def process_image(self, image_path):
-        """
-        Feldolgozza a betöltött képet
-
-        Args:
-            image_path (str): A kép elérési útja
-        """
         self.image_path = image_path
         self.original_pixmap = QPixmap(image_path)
 
@@ -94,13 +89,8 @@ class ObjectDetectorApp(QMainWindow):
             QMessageBox.critical(self, "Hiba", f"Hiba történt az objektumok felismerése közben: {str(e)}")
             self.statusBar().showMessage("Hiba történt a feldolgozás során", 3000)
 
+    # Kép megjelenítése
     def display_image(self, highlight_object=None):
-        """
-        Megjeleníti a képet, opcionálisan kiemeli a kiválasztott objektumot
-
-        Args:
-            highlight_object (dict, optional): A kiemelendő objektum adatai
-        """
         if self.original_pixmap is None:
             return
 
@@ -132,8 +122,8 @@ class ObjectDetectorApp(QMainWindow):
         # Kép megjelenítése
         self.drop_zone.setPixmap(scaled_pixmap)
 
+    # Eredmények frissítése
     def update_results_list(self):
-        """Frissíti az eredmények listáját a felismert objektumokkal"""
         self.results_list.clear()
 
         if not self.detected_objects:
@@ -146,8 +136,8 @@ class ObjectDetectorApp(QMainWindow):
         for obj in sorted_objects:
             self.results_list.addItem(f"{obj['name']} ({obj['score']:.2f})")
 
+    # Kiválasztott objektum kiemelése a képen
     def highlight_selected_object(self):
-        """Kiemeli a kiválasztott objektumot a képen"""
         selected_items = self.results_list.selectedItems()
 
         if not selected_items or not self.detected_objects:

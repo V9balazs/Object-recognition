@@ -4,14 +4,13 @@ import os
 
 from google.cloud import vision
 
-# A könyvtár helyének beállítása
+# A Google Cloud Vision API kulcs fájl helyének beállítása
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "credentials.json"
 
 
 class VisionAPI:
-
+    # Kommunikáció a Google Cloud Vision API-val
     def __init__(self):
-        """Inicializálja a Vision API klienst"""
         try:
             self.client = vision.ImageAnnotatorClient()
             logging.info("Vision API kliens sikeresen inicializálva")
@@ -19,16 +18,8 @@ class VisionAPI:
             logging.error(f"Hiba a Vision API kliens inicializálásakor: {str(e)}")
             raise
 
+    # Objektumok felismerése
     def detect_objects(self, image_path):
-        """
-        Objektumok felismerése a megadott képen
-
-        Args:
-            image_path (str): A kép elérési útja
-
-        Returns:
-            list: Felismert objektumok listája
-        """
         logging.info(f"Objektumok felismerése: {image_path}")
 
         try:

@@ -48,13 +48,8 @@ class UIManager:
 
         return self
 
+    # UI elemek összekapcsolása
     def connect_signals(self, controller):
-        """
-        Összeköti az UI elemek jeleit a megfelelő eseménykezelőkkel
-
-        Args:
-            controller: Az alkalmazás vezérlője, amely tartalmazza az eseménykezelő függvényeket
-        """
         # Gombok összekapcsolása
         self.load_button.clicked.connect(controller.load_image)
 

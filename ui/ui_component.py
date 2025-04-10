@@ -6,15 +6,12 @@ from PyQt6.QtWidgets import QMessageBox
 
 
 class DropZoneLabel(QtWidgets.QLabel):
-    """
-    Egyedi QLabel, amely támogatja a drag and drop funkcionalitást
-    """
 
     # Egyedi jel a kép bedobásának jelzésére
     image_dropped = QtCore.pyqtSignal(str)
 
+    # DropZoneLabel inicializálása
     def __init__(self, parent=None):
-        """Inicializálja a DropZoneLabel-t"""
         super().__init__(parent)
         self.setAcceptDrops(True)
 
@@ -39,24 +36,24 @@ class DropZoneLabel(QtWidgets.QLabel):
         self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.setWordWrap(True)
 
+    # Drag enter esemény kezelése
     def dragEnterEvent(self, event: QDragEnterEvent):
-        """Kezeli a drag enter eseményt"""
         if event.mimeData().hasUrls():
             self.setStyleSheet(self.drag_over_style)
             event.acceptProposedAction()
 
+    # Drag leave esemény kezelése
     def dragLeaveEvent(self, event):
-        """Kezeli a drag leave eseményt"""
         self.setStyleSheet(self.default_style)
         event.accept()
 
+    # Drag move esemény kezelése
     def dragMoveEvent(self, event):
-        """Kezeli a drag move eseményt"""
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
 
+    # Drop esemény kezelése
     def dropEvent(self, event: QDropEvent):
-        """Kezeli a drop eseményt"""
         self.setStyleSheet(self.default_style)
 
         if event.mimeData().hasUrls():
@@ -75,12 +72,9 @@ class DropZoneLabel(QtWidgets.QLabel):
 
 
 class ResultsListWidget(QtWidgets.QListWidget):
-    """
-    Egyedi QListWidget a felismert objektumok megjelenítéséhez
-    """
 
+    # Inicializálja a ResultsListWidget-et
     def __init__(self, parent=None):
-        """Inicializálja a ResultsListWidget-et"""
         super().__init__(parent)
         self.setAlternatingRowColors(True)
         self.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
