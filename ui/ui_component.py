@@ -47,11 +47,6 @@ class DropZoneLabel(QtWidgets.QLabel):
         self.setStyleSheet(self.default_style)
         event.accept()
 
-    # Drag move esemény kezelése
-    def dragMoveEvent(self, event):
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
-
     # Drop esemény kezelése
     def dropEvent(self, event: QDropEvent):
         self.setStyleSheet(self.default_style)
